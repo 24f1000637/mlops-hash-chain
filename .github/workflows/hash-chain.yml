@@ -1,0 +1,22 @@
+name: hash-chain
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: marker-cd42362c
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET }}
+        run: |
+          VERIFY_HASH=$(echo -n "${MY_SECRET}github-verified" | sha256sum | cut -c1-10)
+          echo "$VERIFY_HASH" > verify.txt
+
+      - name: upload-artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: verify-hash-cd42362c
+          path: verify.txt
